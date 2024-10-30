@@ -1,0 +1,40 @@
+version: '3'
+services:
+  xx-backend:
+    container_name: xx-backend
+    image: xx-backend:1.0
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    depends_on: # 依赖其他容器
+      - postgres
+      - redis
+    volumes:
+      - .:/usr/src/app
+    networks:
+      - xx-network # 使用同一网络
+
+  postgres:
+    image: postgres:16
+    container_name: xx-postgres
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: postgres  # 定义数据库用户名
+      POSTGRES_PASSWORD: postgres # 定义数据库密码
+    volumes:
+      - /root/aict/postgres/data:/var/lib/postgresql/data
+    networks:
+      - aict-network
+
+# 容器按需启动
+  redis:
+    image: redis:latest
+    container_name: xx-redis
+    networks:
+      - aict-network
+
+networks:
+  aict-network: # 定义网络名称
